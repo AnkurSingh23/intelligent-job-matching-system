@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Candidate Registration{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h4 mb-3">Register as Candidate</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Full name</label>
+                            <input type="text" name="full_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Experience (years)</label>
+                            <input type="number" min="0" name="total_experience" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Bio</label>
+                            <textarea name="bio" rows="3" class="form-control" maxlength="200" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Preferred location</label>
+                            <input type="text" name="preferred_location" class="form-control" placeholder="Optional">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success mt-3 w-100">Create Candidate Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

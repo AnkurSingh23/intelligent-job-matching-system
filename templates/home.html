@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}My Job Playground{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4 py-md-5">
+    <div class="col-12 col-lg-10">
+        <div class="p-4 p-md-5 rounded-3 bg-white shadow-sm text-center">
+            <h1 class="display-6 fw-bold mb-3">My Job Playground</h1>
+            <p class="fs-6 text-muted mx-auto mb-4" style="max-width: 760px;">
+                A fun and simple hiring playground where candidates apply and recruiters post jobs from real companies.
+            </p>
+            <div class="d-flex gap-2 flex-wrap justify-content-center">
+            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+            <a href="{% url 'register_candidate' %}" class="btn btn-success">Register Candidate</a>
+            <a href="{% url 'register_recruiter' %}" class="btn btn-warning">Register Recruiter</a>
+            <a href="{% url 'job_list' %}" class="btn btn-outline-secondary">View Jobs</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

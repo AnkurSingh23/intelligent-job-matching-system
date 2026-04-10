@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block title %}About My Job Playground{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-3">
+    <div class="col-12 col-lg-11">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
+                <h1 class="h3 mb-3">About This Intelligent Job Matching Backend System</h1>
+                <p class="text-muted mb-4">
+                    This page is a live documentation page for the entire backend. It explains the project structure,
+                    models, relationships, matching logic, routes, admin panel, UI pages, access control, and future scope.
+                </p>
+
+                <h2 class="h5 mt-4">1. Project Overview</h2>
+                <p>
+                    The project is a template-based Django job matching system. It supports candidate registration,
+                    recruiter registration, company-managed hiring, job posting, skill-based matching, applications,
+                    recruiter ranking of candidates, and candidate ranking of jobs.
+                </p>
+                <p>
+                    The high-level idea is simple: candidates store their skills, recruiters create jobs with required skills,
+                    and the backend computes scores to match the right candidate with the right job.
+                </p>
+
+                <h2 class="h5 mt-4">2. System Architecture</h2>
+                <ul class="mb-4">
+                    <li><strong>accounts</strong> - custom user model, login, register, logout, and role-based decorators.</li>
+                    <li><strong>candidates</strong> - candidate profile, candidate skills, and candidate skill management page.</li>
+                    <li><strong>companies</strong> - company model and recruiter profile linked to a company.</li>
+                    <li><strong>jobs</strong> - job creation, job listing, recruiter dashboard, applicant views, and matching views.</li>
+                    <li><strong>core</strong> - shared Skill model used across jobs and candidates.</li>
+                    <li><strong>applications</strong> - job application workflow and applied jobs page.</li>
+                </ul>
+
+                <h2 class="h5 mt-4">3. Models Breakdown</h2>
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Model</th>
+                                <th>Fields</th>
+                                <th>Relationships</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>User</strong></td>
+                                <td>email, password, is_active, is_staff</td>
+                                <td>Base user for candidate or recruiter profiles</td>
+                                <td>Custom authentication with email login</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CandidateProfile</strong></td>
+                                <td>user, full_name, bio, total_experience, resume, preferred_location, expected_salary</td>
+                                <td>OneToOne with User</td>
+                                <td>Stores candidate profile data shown in the app</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CandidateSkill</strong></td>
+                                <td>candidate, skill, proficiency_level, experience</td>
+                                <td>ForeignKey to CandidateProfile and Skill</td>
+                                <td>Stores what skills a candidate has and at what level</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Company</strong></td>
+                                <td>name, city, description</td>
+                                <td>Referenced by RecruiterProfile and Job</td>
+                                <td>Represents a hiring company managed from admin</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RecruiterProfile</strong></td>
+                                <td>user, name, company</td>
+                                <td>OneToOne with User, ForeignKey to Company</td>
+                                <td>Represents recruiter identity and company ownership</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Skill</strong></td>
+                                <td>name</td>
+                                <td>Referenced by CandidateSkill and JobSkill</td>
+                                <td>Shared master skill list used by matching system</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Job</strong></td>
+                                <td>company, created_by, title, description, job_type, location, salary_min, salary_max, created_at</td>
+                                <td>ForeignKey to Company and RecruiterProfile</td>
+                                <td>Stores job posts created by recruiters</td>
+                            </tr>
+                            <tr>
+                                <td><strong>JobSkill</strong></td>
+                                <td>job, skill, importance, required_level</td>
+                                <td>ForeignKey to Job and Skill</td>
+                                <td>Stores required skills for a job</td>
+                            </tr>
+                            <tr>
+                                <td><strong>JobApplication</strong></td>
+                                <td>candidate, job, status, applied_at</td>
+                                <td>ForeignKey to CandidateProfile and Job</td>
+                                <td>Stores candidate applications and workflow status</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 class="h5 mt-4">4. Database Relationships</h2>
+                <ul class="mb-4">
+                    <li><strong>OneToOne (User ↔ Profile)</strong> - each user is exactly one candidate profile or one recruiter profile, which keeps the role identity clean and simple.</li>
+                    <li><strong>ForeignKey (Job → Company)</strong> - a job belongs to one company so company ownership stays clear.</li>
+                    <li><strong>ForeignKey (Job → RecruiterProfile)</strong> - a job also stores who created it, so recruiter actions are traceable.</li>
+                    <li><strong>Through-style mapping models (CandidateSkill, JobSkill)</strong> - these are used to store many skills against candidates/jobs plus extra data like proficiency, importance, and required level.</li>
+                </ul>
+
+                <h2 class="h5 mt-4">5. Core Functionalities</h2>
+                <ul class="mb-4">
+                    <li><strong>Matching Engine</strong> - compares candidate skills against job skills and gives a score.</li>
+                    <li><strong>Job Application System</strong> - candidates can apply to jobs and the application is stored with status and timestamp.</li>
+                    <li><strong>Candidate → Job recommendation</strong> - the system shows jobs ranked by score for a logged-in candidate.</li>
+                    <li><strong>Recruiter → Candidate ranking</strong> - the system shows top candidates for a given job based on matching score.</li>
+                </ul>
+
+                <h2 class="h5 mt-4">6. Control Flow / Function Flow</h2>
+                <p>
+                    This section explains which Django function handles each feature and how the request flows through the backend.
+                </p>
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Function / View</th>
+                                <th>Used For</th>
+                                <th>Flow Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>register_view</strong></td>
+                                <td>Shows role selection page</td>
+                                <td>User opens registration choice screen and picks candidate or recruiter path.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>register_candidate_view</strong></td>
+                                <td>Candidate signup</td>
+                                <td>Creates User + CandidateProfile, logs in the user, redirects to jobs page.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>register_recruiter_view</strong></td>
+                                <td>Recruiter signup</td>
+                                <td>Creates User + RecruiterProfile, links recruiter to an existing company, then redirects to recruiter dashboard.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>login_view</strong></td>
+                                <td>Authentication flow</td>
+                                <td>Checks email/password, logs user in, and redirects based on role.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>job_list</strong></td>
+                                <td>Main job listing / candidate recommendations</td>
+                                <td>Shows all jobs for guests, but for candidates it uses matching logic and shows ranked jobs with match score.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>create_job</strong></td>
+                                <td>Recruiter job creation</td>
+                                <td>Recruiter fills job form, selects required skills, job is saved with JobSkill rows.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>recruiter_jobs</strong></td>
+                                <td>Recruiter dashboard</td>
+                                <td>Shows jobs posted by recruiter, applicant counts, and quick actions.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>job_applicants</strong></td>
+                                <td>Applicants for a specific job</td>
+                                <td>Checks job ownership and displays every candidate who applied.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>apply_to_job</strong></td>
+                                <td>Candidate application process</td>
+                                <td>Candidate applies to a job once; JobApplication row is created.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>applied_jobs</strong></td>
+                                <td>Candidate application history</td>
+                                <td>Lists all jobs applied by the logged-in candidate.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>manage_candidate_skills</strong></td>
+                                <td>Candidate skill management</td>
+                                <td>Candidate adds/removes skills from the existing skill master list.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>candidate_matches</strong></td>
+                                <td>Candidate job recommendations</td>
+                                <td>Uses the matching service to rank jobs for a candidate profile.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>job_matches</strong></td>
+                                <td>Recruiter candidate ranking</td>
+                                <td>Uses the matching service to rank candidates for one job.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 class="h5 mt-4">7. Matching Algorithm</h2>
+                <p>
+                    The matching logic is implemented in <strong>jobs/services/matching.py</strong>. It uses candidate skills and job required skills.
+                </p>
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Part</th>
+                                <th>Explanation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Level mapping</td>
+                                <td>beginner = 1, intermediate = 2, expert = 3</td>
+                            </tr>
+                            <tr>
+                                <td>Importance weights</td>
+                                <td>nice_to_have = 1, preferred = 2, very_important = 3</td>
+                            </tr>
+                            <tr>
+                                <td>Score formula</td>
+                                <td>level_ratio × importance_weight × 10</td>
+                            </tr>
+                            <tr>
+                                <td>Level ratio</td>
+                                <td>candidate_level / required_level, capped at 1.0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>
+                    This means a candidate with the right skill and a strong level gets a higher score. Jobs and candidates are then sorted by score.
+                </p>
+
+                <h2 class="h5 mt-4">8. URL Routing</h2>
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Route</th>
+                                <th>What It Does</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>/accounts/register/</strong></td><td>Shows registration choice page</td></tr>
+                            <tr><td><strong>/accounts/login/</strong></td><td>Login page for all users</td></tr>
+                            <tr><td><strong>/candidate/&lt;id&gt;/matches/</strong></td><td>Shows ranked jobs for a candidate</td></tr>
+                            <tr><td><strong>/job/&lt;id&gt;/matches/</strong></td><td>Shows top ranked candidates for a job</td></tr>
+                            <tr><td><strong>/applications/apply/&lt;id&gt;/</strong></td><td>Lets a candidate apply to a job</td></tr>
+                            <tr><td><strong>/applications/applied/</strong></td><td>Shows candidate’s applied jobs</td></tr>
+                            <tr><td><strong>/about/</strong></td><td>Live documentation page</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 class="h5 mt-4">9. Authentication & Decorators</h2>
+                <ul class="mb-4">
+                    <li><strong>login_required</strong> protects pages that should only be reachable by authenticated users.</li>
+                    <li><strong>unauthenticated_user</strong> redirects logged-in users away from login and register pages.</li>
+                    <li><strong>candidate_required</strong> makes sure only candidates can reach candidate-only actions.</li>
+                    <li><strong>recruiter_required</strong> makes sure only recruiters can reach recruiter-only actions.</li>
+                </ul>
+
+                <h2 class="h5 mt-4">10. Admin Panel</h2>
+                <ul class="mb-4">
+                    <li><strong>Registered models</strong>: User, CandidateProfile, CandidateSkill, Company, RecruiterProfile, Skill, Job, JobSkill, JobApplication.</li>
+                    <li><strong>Usage</strong>: admin panel is used to manage core data, add companies, inspect users, test the demo dataset, and update application statuses.</li>
+                    <li><strong>Why it matters</strong>: it gives a fast backend control center for demos and interviews.</li>
+                </ul>
+
+                <h2 class="h5 mt-4">11. Pages / UI</h2>
+                <ul class="mb-4">
+                    <li><strong>Home page</strong> - entry page with login/register buttons and app branding.</li>
+                    <li><strong>Matches page</strong> - candidate jobs ranked by matching score or recruiter top candidates page.</li>
+                    <li><strong>Applied jobs page</strong> - candidate’s application history and statuses.</li>
+                    <li><strong>Job listing page</strong> - public list of jobs, with match-aware ordering for logged-in candidates.</li>
+                </ul>
+
+                <h2 class="h5 mt-4">12. Future Improvements</h2>
+                <ul class="mb-0">
+                    <li>Add filters for location, job type, salary, and match score.</li>
+                    <li>Upgrade to ML-based ranking instead of only rule-based matching.</li>
+                    <li>Add DRF APIs for mobile or frontend integrations.</li>
+                    <li>Add edit/update skill management for candidates.</li>
+                    <li>Add pagination and search across job listing and applicant lists.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

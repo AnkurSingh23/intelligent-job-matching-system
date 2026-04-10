@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}My Posted Jobs{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0">My Posted Jobs</h2>
+    <a href="{% url 'create_job' %}" class="btn btn-primary btn-sm">Create New Job</a>
+</div>
+
+{% if jobs %}
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Recruiter</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Applicants</th>
+                    <th>Created</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr>
+                        <td>{{ job.title }}</td>
+                        <td>{{ job.created_by.name }}</td>
+                        <td>{{ job.job_type }}</td>
+                        <td>{{ job.location }}</td>
+                        <td>{{ job.applicant_count|default:0 }}</td>
+                        <td>{{ job.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'job_applicants' job.id %}" class="btn btn-sm btn-outline-primary">View Applicants</a>
+                            <a href="{% url 'job_matches' job.id %}" class="btn btn-sm btn-outline-success">Top Candidates</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">You have not posted any jobs yet.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Recruiter Registration{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h4 mb-3">Register as Recruiter</h2>
+                <p class="text-muted">Company is managed by admin. Select one existing company below.</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Recruiter Name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Select Existing Company</label>
+                            <select name="company_id" class="form-select" required>
+                                <option value="">-- Select Company --</option>
+                                {% for company in companies %}
+                                    <option value="{{ company.id }}">{{ company.name }} ({{ company.city }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-4 w-100">Create Recruiter Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

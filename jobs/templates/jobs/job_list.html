@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Jobs{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    {% if candidate %}
+        <h2 class="h4 mb-0">Top Matched Jobs For You</h2>
+    {% else %}
+        <h2 class="h4 mb-0">All Jobs</h2>
+    {% endif %}
+    {% if current_user_role == 'candidate' %}
+        <a href="{% url 'applied_jobs' %}" class="btn btn-outline-primary btn-sm">My Applications</a>
+    {% endif %}
+</div>
+
+{% if candidate %}
+    <div class="card mb-3 border-0 shadow-sm">
+        <div class="card-body">
+            <h3 class="h6 mb-2">Your Skills</h3>
+            {% if candidate_skill_names %}
+                <div class="d-flex flex-wrap gap-2">
+                    {% for skill in candidate_skill_names %}
+                        <span class="badge text-bg-success">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No skills added yet in your profile.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+
+{% if job_cards %}
+    <div class="row g-3">
+        {% for card in job_cards %}
+            {% with job=card.job %}
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <h3 class="h5 mb-1">{{ job.title }}</h3>
+                                <p class="text-muted mb-1">{{ job.company.name }} | {{ job.location }}</p>
+                                <p class="text-muted mb-1"><small>Posted by {{ job.created_by.name }}</small></p>
+                                {% if candidate and card.score %}
+                                    <p class="mb-1"><small class="text-primary">Match Score: {{ card.score|floatformat:2 }}</small></p>
+                                {% endif %}
+                                <p class="mb-2">{{ job.description|truncatechars:180 }}</p>
+                                <p class="mb-2">
+                                    <small class="text-muted">Required Skills:</small>
+                                    {% if card.required_skills %}
+                                        {% for skill in card.required_skills %}
+                                            <span class="badge text-bg-light border">{{ skill }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-muted">Not specified</span>
+                                    {% endif %}
+                                </p>
+                                <small class="text-muted">{{ job.job_type }} | {{ job.get_salary }}</small>
+                            </div>
+                            <div>
+                                {% if current_user_role == 'candidate' %}
+                                    <a href="{% url 'apply_job' job.id %}" class="btn btn-primary btn-sm">Apply</a>
+                                {% else %}
+                                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Login to apply</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+{% else %}
+    {% if candidate %}
+        <div class="alert alert-info">No matched jobs found yet based on your skills.</div>
+    {% else %}
+        <div class="alert alert-info">No jobs available right now.</div>
+    {% endif %}
+{% endif %}
+{% endblock %}

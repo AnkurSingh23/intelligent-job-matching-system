@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Create Job{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h4 mb-3">Create Job</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="title" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="location" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Job Type</label>
+                            <select name="job_type" class="form-select">
+                                <option value="full_time">Full Time</option>
+                                <option value="remote">Remote</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Salary Min</label>
+                            <input type="number" min="0" name="salary_min" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Salary Max</label>
+                            <input type="number" min="0" name="salary_max" class="form-control">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" rows="4" class="form-control" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Required Skills</label>
+                            <div class="row g-2">
+                                {% for skill in skills %}
+                                    <div class="col-6 col-md-4">
+                                        <div class="form-check border rounded p-2 bg-light">
+                                            <input class="form-check-input" type="checkbox" name="skill_ids" value="{{ skill.id }}" id="skill_{{ skill.id }}">
+                                            <label class="form-check-label" for="skill_{{ skill.id }}">
+                                                {{ skill.name }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <small class="text-muted d-block mt-1">Select at least one skill.</small>
+                        </div>
+                    </div>
+                    <button class="btn btn-success mt-3" type="submit">Create Job</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

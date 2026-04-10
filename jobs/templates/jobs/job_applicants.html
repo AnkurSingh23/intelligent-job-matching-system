@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Applicants{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="h4 mb-1">Applicants for {{ job.title }}</h2>
+        <p class="text-muted mb-0">{{ job.company.name }} | {{ job.location }}</p>
+    </div>
+    <a href="{% url 'recruiter_jobs' %}" class="btn btn-outline-secondary btn-sm">Back to My Jobs</a>
+</div>
+
+{% if applications %}
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white">
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Applied At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                    <tr>
+                        <td>{{ app.candidate.full_name }}</td>
+                        <td>{{ app.candidate.user.email }}</td>
+                        <td><span class="badge text-bg-secondary text-uppercase">{{ app.status }}</span></td>
+                        <td>{{ app.applied_at|date:"M d, Y" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">No one has applied to this job yet.</div>
+{% endif %}
+{% endblock %}

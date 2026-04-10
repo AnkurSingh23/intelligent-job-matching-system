@@ -1,0 +1,9 @@
+<h2>Top Candidates for {{ job.title }}</h2>
+
+<ul>
+    {% for item in results %}
+        <li>
+            {{ item.candidate.name }} - Score: {{ item.score }}
+        </li>
+    {% endfor %}
+</ul>

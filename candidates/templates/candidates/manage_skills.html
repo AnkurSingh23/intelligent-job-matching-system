@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}My Skills{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Add Skill</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add">
+
+                    <div class="mb-3">
+                        <label class="form-label">Skill</label>
+                        <select name="skill_id" class="form-select" required>
+                            <option value="">-- Select Skill --</option>
+                            {% for skill in available_skills %}
+                                <option value="{{ skill.id }}">{{ skill.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Proficiency</label>
+                        <select name="proficiency_level" class="form-select" required>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Experience (Years)</label>
+                        <input type="number" name="experience" min="0" value="0" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Add Skill</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">My Skills</h2>
+
+                {% if existing_skills %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Skill</th>
+                                    <th>Proficiency</th>
+                                    <th>Experience</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cs in existing_skills %}
+                                    <tr>
+                                        <td>{{ cs.skill.name }}</td>
+                                        <td>{{ cs.proficiency_level|title }}</td>
+                                        <td>{{ cs.experience }} year(s)</td>
+                                        <td>
+                                            <form method="post" class="d-inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="remove">
+                                                <input type="hidden" name="candidate_skill_id" value="{{ cs.id }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mb-0">No skills added yet. Add your first skill from the left panel.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

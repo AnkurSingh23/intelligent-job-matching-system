@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Job Matches{% endblock %}
+
+{% block content %}
+<h2 class="h4 mb-3">Top Candidates for {{ job.title }}</h2>
+
+{% if results %}
+    <ul class="list-group">
+        {% for item in results %}
+            <li class="list-group-item d-flex justify-content-between">
+                <span>{{ item.candidate.full_name }}</span>
+                <span class="badge text-bg-primary">{{ item.score|floatformat:2 }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="alert alert-info">No candidates matched yet.</div>
+{% endif %}
+{% endblock %}
