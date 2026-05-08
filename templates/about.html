@@ -1,31 +1,48 @@
 {% extends "base.html" %}
 
-{% block title %}About My Job Playground{% endblock %}
+{% block title %}About | JobMatch Campus Portal{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center py-3">
-    <div class="col-12 col-lg-11">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4 p-md-5">
-                <h1 class="h3 mb-3">About This Intelligent Job Matching Backend System</h1>
-                <p class="text-muted mb-4">
-                    This page is a live documentation page for the entire backend. It explains the project structure,
-                    models, relationships, matching logic, routes, admin panel, UI pages, access control, and future scope.
-                </p>
+<div class="hero-box p-4 p-md-5 mb-4">
+    <div class="page-title">
+        <h1>About This Project</h1>
+        <p class="muted-note mb-0">A college-style Django portal with matching, applications, and recruiter dashboards.</p>
+    </div>
 
-                <h2 class="h5 mt-4">1. Project Overview</h2>
+    <div class="grid mb-4">
+        <div class="stat-box"><div class="stat-number">Django</div><div class="stat-label">Server-rendered pages</div></div>
+        <div class="stat-box"><div class="stat-number">Email</div><div class="stat-label">Custom login flow</div></div>
+        <div class="stat-box"><div class="stat-number">Rank</div><div class="stat-label">Skill-based matching</div></div>
+        <div class="stat-box"><div class="stat-number">Admin</div><div class="stat-label">Managed demo data</div></div>
+    </div>
+
+    <p class="mb-0" style="max-width: 920px;">
+        This page documents the backend, the data model, the matching logic, and the request flow.
+        The layout keeps the early-2010s portal look, but the structure is clean enough to read like a real project.
+    </p>
+</div>
+
+<div class="row justify-content-center py-2">
+    <div class="col-12 col-lg-11">
+        <div class="panel mb-4">
+            <div class="panel-header px-3 py-2">System Overview</div>
+            <div class="card-body">
                 <p>
                     The project is a template-based Django job matching system. It supports candidate registration,
                     recruiter registration, company-managed hiring, job posting, skill-based matching, applications,
                     recruiter ranking of candidates, and candidate ranking of jobs.
                 </p>
-                <p>
-                    The high-level idea is simple: candidates store their skills, recruiters create jobs with required skills,
-                    and the backend computes scores to match the right candidate with the right job.
+                <p class="mb-0">
+                    Candidates store their skills, recruiters create jobs with required skills, and the backend computes
+                    scores to match the right candidate with the right job.
                 </p>
+            </div>
+        </div>
 
-                <h2 class="h5 mt-4">2. System Architecture</h2>
-                <ul class="mb-4">
+        <div class="panel">
+            <div class="panel-header px-3 py-2">System Architecture</div>
+            <div class="card-body">
+                <ul class="mb-0">
                     <li><strong>accounts</strong> - custom user model, login, register, logout, and role-based decorators.</li>
                     <li><strong>candidates</strong> - candidate profile, candidate skills, and candidate skill management page.</li>
                     <li><strong>companies</strong> - company model and recruiter profile linked to a company.</li>
@@ -33,6 +50,8 @@
                     <li><strong>core</strong> - shared Skill model used across jobs and candidates.</li>
                     <li><strong>applications</strong> - job application workflow and applied jobs page.</li>
                 </ul>
+            </div>
+        </div>
 
                 <h2 class="h5 mt-4">3. Models Breakdown</h2>
                 <div class="table-responsive mb-4">

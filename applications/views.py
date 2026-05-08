@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
 from candidates.models import CandidateProfile
 from jobs.models import Job
 from .models import JobApplication
@@ -12,6 +13,14 @@ from accounts.decorators import candidate_required
 def apply_to_job(request, job_id):
     candidate = request.candidate_profile
     job = get_object_or_404(Job, id=job_id)
+
+    if not job.is_active:
+        messages.error(request, "This job is no longer active.")
+        return redirect('job_list')
+
+    if job.application_deadline and job.application_deadline < timezone.localdate():
+        messages.error(request, "The application deadline for this job has passed.")
+        return redirect('job_list')
 
     already_applied = JobApplication.objects.filter(candidate=candidate, job=job).exists()
 

@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}My Skills{% endblock %}
+{% block title %}My Skills | JobMatch Campus Portal{% endblock %}
 
 {% block content %}
+<div class="page-title">
+    <h1>My Skills</h1>
+</div>
+
 <div class="row g-3">
     <div class="col-lg-5">
-        <div class="card shadow-sm">
+        <div class="panel">
+            <div class="panel-header px-3 py-2">Add Skill</div>
             <div class="card-body">
-                <h2 class="h5 mb-3">Add Skill</h2>
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="add">
@@ -43,9 +47,9 @@
     </div>
 
     <div class="col-lg-7">
-        <div class="card shadow-sm">
+        <div class="panel">
+            <div class="panel-header px-3 py-2">Current Skills</div>
             <div class="card-body">
-                <h2 class="h5 mb-3">My Skills</h2>
 
                 {% if existing_skills %}
                     <div class="table-responsive">

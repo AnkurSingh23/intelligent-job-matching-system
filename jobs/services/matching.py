@@ -45,7 +45,7 @@ def calculate_match_score(candidate, job):
 
 
 def get_top_jobs_for_candidate(candidate):
-    jobs = Job.objects.select_related("company", "created_by").all()
+    jobs = Job.objects.filter(is_active=True).select_related("company", "created_by").all()
     result = []
 
     for job in jobs:

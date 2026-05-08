@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Create Job{% endblock %}
+{% block title %}Create Job | JobMatch Campus Portal{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <div class="card shadow-sm">
+        <div class="panel">
+            <div class="panel-header px-3 py-2">Create Job</div>
             <div class="card-body p-4">
-                <h2 class="h4 mb-3">Create Job</h2>
                 <form method="POST">
                     {% csrf_token %}
                     <div class="row g-3">

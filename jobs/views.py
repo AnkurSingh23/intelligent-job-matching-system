@@ -25,7 +25,7 @@ about = about_view
 
 
 def job_list(request):
-    jobs = Job.objects.select_related("company", "created_by").order_by("-created_at")
+    jobs = Job.objects.filter(is_active=True).select_related("company", "created_by").order_by("-created_at")
     candidate = None
     candidate_skill_names = []
     match_scores = {}
@@ -87,7 +87,7 @@ def create_job(request):
             return render(request, "jobs/create_job.html", {"skills": skills})
 
         with transaction.atomic():
-            job = Job.objects.create(
+            job = Job(
                 company=recruiter.company,
                 created_by=recruiter,
                 title=title,
@@ -97,6 +97,8 @@ def create_job(request):
                 salary_min=salary_min,
                 salary_max=salary_max,
             )
+            job.full_clean()
+            job.save()
 
             for skill in Skill.objects.filter(id__in=selected_skill_ids):
                 JobSkill.objects.create(

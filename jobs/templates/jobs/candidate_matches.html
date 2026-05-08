@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Candidate Matches{% endblock %}
+{% block title %}Candidate Matches | JobMatch Campus Portal{% endblock %}
 
 {% block content %}
-<h2 class="h4 mb-3">Recommended Jobs for {{ candidate.full_name }}</h2>
+<div class="page-title">
+    <h1>Recommended Jobs for {{ candidate.full_name }}</h1>
+</div>
 
 {% for job, score in results %}
-    <div class="card mb-3">
+    <div class="panel mb-3">
         <div class="card-body">
             <h3 class="h5">{{ job.title }}</h3>
             <p class="mb-1">Match Score: {{ score|floatformat:2 }}</p>

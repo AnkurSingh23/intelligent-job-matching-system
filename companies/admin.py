@@ -3,26 +3,22 @@ from .models import Company, RecruiterProfile
 
 
 class RecruiterInline(admin.TabularInline):
-	model = RecruiterProfile
-	extra = 1
+    model = RecruiterProfile
+    extra = 1
 
 
-# Register your models here.
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-	list_display = ("id", "name", "city", "recruiter_count")
-	list_filter = ("city",)
-	search_fields = ("name", "city")
-	inlines = [RecruiterInline]
-
-	def recruiter_count(self, obj):
-		return obj.recruiterprofile_set.count()
-
-	recruiter_count.short_description = "Recruiters"
+    list_display = ('name', 'city')
+    list_filter = ('city',)
+    search_fields = ('name', 'city')
+    inlines = [RecruiterInline]
+    ordering = ('name',)
 
 
 @admin.register(RecruiterProfile)
 class RecruiterProfileAdmin(admin.ModelAdmin):
-	list_display = ("id", "name", "user", "company")
-	list_filter = ("company",)
-	search_fields = ("name", "user__email", "company__name")
+    list_display = ('name', 'user', 'company')
+    list_filter = ('company',)
+    search_fields = ('name', 'user__email', 'company__name')
+    ordering = ('name',)

@@ -1,22 +1,53 @@
 {% extends "base.html" %}
 
-{% block title %}My Job Playground{% endblock %}
+{% block title %}Home | JobMatch Campus Portal{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center py-4 py-md-5">
-    <div class="col-12 col-lg-10">
-        <div class="p-4 p-md-5 rounded-3 bg-white shadow-sm text-center">
-            <h1 class="display-6 fw-bold mb-3">My Job Playground</h1>
-            <p class="fs-6 text-muted mx-auto mb-4" style="max-width: 760px;">
-                A fun and simple hiring playground where candidates apply and recruiters post jobs from real companies.
-            </p>
-            <div class="d-flex gap-2 flex-wrap justify-content-center">
+<div class="hero-box p-4 p-md-5 text-center mb-4">
+    <div class="page-title">
+        <h1>JobMatch Campus Portal</h1>
+        <p class="muted-note mb-0">A polished-but-student-made job matching site for candidates and recruiters.</p>
+    </div>
+
+    <p class="mx-auto mb-4" style="max-width: 820px; font-size: 1.05rem;">
+        Browse jobs, manage skills, post openings, and compare matches in a clean early-2010s style interface.
+    </p>
+
+    <div class="d-flex gap-2 flex-wrap justify-content-center">
+        {% if user.is_authenticated %}
+            <a href="{% url 'job_list' %}" class="btn btn-primary">Browse Jobs</a>
+            {% if current_user_role == 'candidate' %}
+                <a href="{% url 'candidate_skills' %}" class="btn btn-success">Manage Skills</a>
+                <a href="{% url 'applied_jobs' %}" class="btn btn-info">Applied Jobs</a>
+            {% elif current_user_role == 'recruiter' %}
+                <a href="{% url 'create_job' %}" class="btn btn-warning">Post a Job</a>
+                <a href="{% url 'recruiter_jobs' %}" class="btn btn-info">My Jobs</a>
+            {% endif %}
+        {% else %}
             <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
-            <a href="{% url 'register_candidate' %}" class="btn btn-success">Register Candidate</a>
-            <a href="{% url 'register_recruiter' %}" class="btn btn-warning">Register Recruiter</a>
-            <a href="{% url 'job_list' %}" class="btn btn-outline-secondary">View Jobs</a>
-            </div>
+            <a href="{% url 'register_candidate' %}" class="btn btn-success">Candidate Sign Up</a>
+            <a href="{% url 'register_recruiter' %}" class="btn btn-warning">Recruiter Sign Up</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="grid mb-4">
+    <div class="stat-box"><div class="stat-number">4</div><div class="stat-label">Demo jobs ready to explore</div></div>
+    <div class="stat-box"><div class="stat-number">8</div><div class="stat-label">Skills in the matching engine</div></div>
+    <div class="stat-box"><div class="stat-number">2</div><div class="stat-label">User roles with separate flows</div></div>
+    <div class="stat-box"><div class="stat-number">100%</div><div class="stat-label">College-project energy</div></div>
+</div>
+
+<div class="panel">
+    <div class="panel-header px-3 py-2">How It Works</div>
+    <div class="card-body">
+        <div class="grid">
+            <div class="info-box p-3 text-center"><div class="stat-number">1</div><strong>Create profile</strong><div class="muted-note">Choose candidate or recruiter.</div></div>
+            <div class="info-box p-3 text-center"><div class="stat-number">2</div><strong>Add skills or jobs</strong><div class="muted-note">Build your side of the portal.</div></div>
+            <div class="info-box p-3 text-center"><div class="stat-number">3</div><strong>View matches</strong><div class="muted-note">See who fits what best.</div></div>
+            <div class="info-box p-3 text-center"><div class="stat-number">4</div><strong>Apply or hire</strong><div class="muted-note">Finish the workflow end to end.</div></div>
         </div>
     </div>
 </div>
+
 {% endblock %}

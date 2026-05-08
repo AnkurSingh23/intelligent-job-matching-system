@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Candidate Registration{% endblock %}
+{% block title %}Candidate Registration | JobMatch Campus Portal{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-7">
-        <div class="card shadow-sm">
+        <div class="panel">
+            <div class="panel-header px-3 py-2">Register as Candidate</div>
             <div class="card-body p-4">
-                <h2 class="h4 mb-3">Register as Candidate</h2>
                 <form method="POST">
                     {% csrf_token %}
                     <div class="row g-3">
@@ -35,6 +35,9 @@
                             <label class="form-label">Preferred location</label>
                             <input type="text" name="preferred_location" class="form-control" placeholder="Optional">
                         </div>
+                    </div>
+                    <div class="mt-3 p-3" style="background:#f7f3e6; border:1px solid #c7b17a;">
+                        <strong>Tip:</strong> keep the bio concise and resume-like.
                     </div>
                     <button type="submit" class="btn btn-success mt-3 w-100">Create Candidate Account</button>
                 </form>

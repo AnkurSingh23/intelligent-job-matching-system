@@ -32,6 +32,10 @@ def register_candidate_view(request):
         if not email or not password or not full_name or not bio:
             messages.error(request, "Please fill all required fields.")
             return render(request, "accounts/register_candidate.html")
+        
+        if len(password) < 8:
+            messages.error(request, "Password must be at least 8 characters long.")
+            return render(request, "accounts/register_candidate.html")
 
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email already registered. Please log in.")
@@ -78,6 +82,10 @@ def register_recruiter_view(request):
 
         if not email or not password or not recruiter_name or not company_id:
             messages.error(request, "Email, password, recruiter name and company are required.")
+            return render(request, "accounts/register_recruiter.html", {"companies": companies})
+        
+        if len(password) < 8:
+            messages.error(request, "Password must be at least 8 characters long.")
             return render(request, "accounts/register_recruiter.html", {"companies": companies})
 
         if User.objects.filter(email=email).exists():

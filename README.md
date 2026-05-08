@@ -1,327 +1,232 @@
-<<<<<<< HEAD
 <div align="center">
 
-# Job Matching Backend (Django)
+# Job Matching Backend
 
-A backend-focused Django project for matching candidates and jobs using skill-based logic.
+A Django-based job portal for candidates and recruiters, with skill-based matching, application tracking, and recruiter dashboards.
 
 <p>
   <img src="https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python Badge" />
-  <img src="https://img.shields.io/badge/Django-Backend-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django Badge" />
+  <img src="https://img.shields.io/badge/Django-5.x-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django Badge" />
   <img src="https://img.shields.io/badge/Database-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite Badge" />
-  <img src="https://img.shields.io/badge/Status-Student%20Project-6A5ACD?style=for-the-badge" alt="Status Badge" />
+  <img src="https://img.shields.io/badge/UI-Django%20Templates-2D2D2D?style=for-the-badge" alt="Django Templates Badge" />
 </p>
 
 </div>
 
----
-
 ## Overview
 
-This project is a Django-based backend system for a job matching platform. It supports candidate and recruiter workflows, including profile handling, skill management, job posting, applications, and skill-based candidate-job matching. The focus is on backend architecture, relational data modeling, and practical business logic implementation.
+This project is a server-rendered Django application built around a real job matching workflow. Candidates can create profiles, manage skills, upload resumes, and apply to jobs. Recruiters can create jobs, inspect applicants, and rank candidates using a rule-based matching engine.
 
-## Core Features
+The codebase is split into focused Django apps so the project stays modular and easy to extend.
 
-- Role-based authentication for `Candidate` and `Recruiter` users
-- Candidate skill management (add/remove skills, level, experience)
-- Recruiter job creation with required skills
-- Skill-based matching engine to:
-  - rank jobs for a candidate
-  - rank candidates for a job
-- Job application flow with status tracking:
-  - `Applied`
-  - `Shortlisted`
-  - `Rejected`
-- Access control using decorators and role checks
+## Highlights
 
-## Tech Stack
-
-- Python
-- Django
-- SQLite (default development database)
-- Django Templates (server-rendered UI)
+- Email-based authentication with custom user model
+- Separate candidate and recruiter registration flows
+- Candidate profile management with resume upload and salary expectations
+- Candidate skill tracking with proficiency and experience
+- Company and recruiter profiles
+- Job creation with skill requirements and importance levels
+- Candidate-to-job and job-to-candidate ranking
+- Application status tracking with applied, shortlisted, and rejected states
+- Django admin support for managing the main models
 
 ## Project Structure
 
 ```text
 job_matching/
-├─ accounts/        # Authentication, registration, role-based access
-├─ candidates/      # Candidate profile and skills management
-├─ companies/       # Company and recruiter profile models
-├─ jobs/            # Job posting, listing, recruiter dashboard, matching views
-│  └─ services/
-│     └─ matching.py
-├─ applications/    # Job application and status tracking
-├─ core/            # Shared models (e.g., Skill) + seed/reset migrations
-├─ templates/       # Shared templates (base, home, about)
-├─ job_matching/    # Project settings, root urls, ASGI/WSGI
-└─ manage.py
+├── accounts/       # Custom user model, login, logout, registration, role checks
+├── applications/   # Job applications and application status workflow
+├── candidates/     # Candidate profile and skill management
+├── companies/      # Company and recruiter profile models
+├── core/           # Shared Skill model and seed/reset migrations
+├── jobs/           # Job listing, creation, applicants, and matching views
+├── matching/       # Reserved app placeholder
+├── templates/      # Shared pages such as home and about
+├── media/          # Uploaded resume files
+├── job_matching/   # Project settings and URL configuration
+└── manage.py
 ```
 
-## Matching Logic (Simple)
+## Main Apps
 
-The matching system compares candidate skills against required job skills and computes a score using:
+### accounts
+
+Handles email-based user creation, login, logout, candidate registration, and recruiter registration.
+
+### candidates
+
+Stores candidate profile data and the many-to-one relationship between candidates and skills.
+
+### companies
+
+Stores company records and recruiter profiles linked to a company.
+
+### jobs
+
+Contains job listing, job creation, recruiter job dashboard, applicant views, and the matching service.
+
+### applications
+
+Stores job applications and application statuses.
+
+### core
+
+Provides the shared `Skill` model used by both candidates and jobs.
+
+## Matching Logic
+
+The matching engine lives in [jobs/services/matching.py](jobs/services/matching.py). It scores candidate and job pairs using:
 
 - skill overlap
-- candidate proficiency level
-- required skill level
-- importance weight per required skill
+- candidate proficiency level: beginner, intermediate, expert
+- required skill level: beginner, intermediate, expert
+- importance weight: nice_to_have, preferred, very_important
 
-Top results are sorted by score and shown in candidate and recruiter match pages.
+The result is a ranked list of the top 10 matches for candidates or jobs.
 
-## Quick Start
+## Data Model
 
-### 1. Clone the repository
+### User
+
+The project uses a custom user model based on email instead of username.
+
+### CandidateProfile
+
+Stores:
+
+- full name
+- bio
+- total experience
+- resume file
+- preferred location
+- expected salary
+
+### CandidateSkill
+
+Links a candidate to a skill and stores:
+
+- proficiency level
+- experience
+
+### Company
+
+Stores organization details for recruiters.
+
+### RecruiterProfile
+
+Links a recruiter user to a company.
+
+### Job
+
+Stores:
+
+- title
+- description
+- job type
+- location
+- salary range
+- company
+- creator
+
+### JobSkill
+
+Connects a job to required skills with:
+
+- required level
+- importance level
+
+### JobApplication
+
+Tracks applications with:
+
+- candidate
+- job
+- status
+- applied timestamp
+
+## Routes
+
+### Public
+
+- `/` - Home page
+- `/about/` - About page
+- `/jobs/` - Job list with match ranking for logged-in candidates
+
+### Accounts
+
+- `/accounts/register/` - Choose registration type
+- `/accounts/register/candidate/` - Candidate registration
+- `/accounts/register/recruiter/` - Recruiter registration
+- `/accounts/login/` - Login
+- `/accounts/logout/` - Logout
+
+### Candidate actions
+
+- `/candidates/skills/` - Manage candidate skills
+- `/applications/apply/<job_id>/` - Apply to a job
+- `/applications/applied/` - View applied jobs
+- `/candidate/<candidate_id>/matches/` - View matched jobs for a candidate
+
+### Recruiter actions
+
+- `/jobs/create/` - Create a job
+- `/jobs/my/` - View recruiter-created jobs
+- `/jobs/<job_id>/applicants/` - View applicants for a job
+- `/job/<job_id>/matches/` - View top candidates for a job
+
+## Tech Stack
+
+- Python
+- Django 5.x
+- SQLite
+- Django templates
+- django-money for salary fields
+
+## Setup
+
+1. Install the project dependencies.
 
 ```bash
-git clone <your-repo-url>
-cd job_matching
+pip install Django django-money
 ```
 
-### 2. Create and activate virtual environment
-
-```bash
-python -m venv .venv
-```
-
-Windows (PowerShell):
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-### 3. Install dependencies
-
-```bash
-pip install django
-```
-
-### 4. Run migrations
+2. Apply database migrations.
 
 ```bash
 python manage.py migrate
 ```
 
-### 5. Start development server
+3. Create an admin user if needed.
+
+```bash
+python manage.py createsuperuser
+```
+
+4. Start the development server.
 
 ```bash
 python manage.py runserver
 ```
 
-Open: `http://127.0.0.1:8000/`
+Open `http://127.0.0.1:8000/` in your browser.
 
-## Main App Flows
+## Notes
 
-### Candidate Flow
-
-1. Register as candidate
-2. Add skills in profile
-3. View matched jobs
-4. Apply to jobs
-5. Track application statuses
-
-### Recruiter Flow
-
-1. Register as recruiter
-2. Create job posts with required skills
-3. View applicants per job
-4. View top matched candidates
-
-## Why This Project
-
-This project demonstrates backend internship-ready fundamentals:
-
-- real-world relational modeling
-- role-based authorization
-- clean modular Django app design
-- practical scoring logic in a service layer
-- maintainable and extendable project structure
+- The project uses SQLite through `db.sqlite3`.
+- Resume uploads are stored in `media/resumes/`.
+- Application statuses currently are `applied`, `shortlisted`, and `rejected`.
+- The repository includes seed and reset migrations under `core/migrations/`.
+- There is no `requirements.txt` in the current workspace, so dependencies are listed manually here.
 
 ## Future Improvements
 
-- Convert to Django REST API + JWT auth
-- Add filtering (location, salary, job type, score)
-- Add recruiter actions to update application status from dashboard
-- Improve matching with weighted normalization or ML ranking
-- Add automated tests for services and views
+- Add a `requirements.txt` file for dependency pinning
+- Add filtering for location, salary, and job type
+- Expose the matching logic through an API
+- Add recruiter actions for updating application status from the dashboard
+- Add automated tests for views and matching logic
 
----
+## License
 
-## Author
-
-Built as a backend-focused student project for internship preparation.
-=======
-Intelligent Job Matching Backend System
-
-A backend-driven job matching platform built using Django that intelligently matches candidates and jobs using a rule-based scoring engine.
-
-🔥 Project Overview
-
-This system simulates a mini job portal where:
-
-Candidates can register, add skills, and apply for jobs
-Recruiters can create jobs under companies
-The system computes a matching score to recommend:
-Jobs to candidates
-Candidates to recruiters
-
-The core highlight is a custom matching engine that ranks results instead of simple filtering.
-
-🧠 System Architecture
-
-The project follows a multi-app Django architecture:
-
-App	Responsibility
-accounts	Custom user model, authentication (email-based login)
-candidates	Candidate profile and skill management
-companies	Company and recruiter management
-jobs	Job creation, listing, and matching views
-core	Shared entities like Skill
-applications	Job application workflow
-🗂️ Data Model Overview
-🔐 User
-Custom authentication using email
-Base model for both candidates and recruiters
-👤 CandidateProfile
-Linked to User (OneToOne)
-Stores:
-Name, bio, experience
-Resume
-Preferred location
-Expected salary
-🧠 Skill
-Central skill table
-Shared across candidates and jobs
-🔗 CandidateSkill
-Links Candidate ↔ Skill
-Stores:
-Proficiency level (beginner, intermediate, expert)
-Experience
-🏢 Company
-Represents an organization
-Managed via admin panel
-👨‍💼 RecruiterProfile
-Linked to User and Company
-Represents recruiter identity
-💼 Job
-Created by recruiter under a company
-Stores:
-Title, description
-Job type, location
-Salary range
-🎯 JobSkill
-Links Job ↔ Skill
-Stores:
-Required level
-Importance (nice_to_have, preferred, very_important)
-📄 JobApplication
-Links Candidate ↔ Job
-Stores:
-Status (applied, shortlisted, rejected)
-Timestamp
-🔗 Database Relationships
-OneToOne
-User ↔ CandidateProfile / RecruiterProfile
-ForeignKey
-Job → Company
-Job → RecruiterProfile
-Through Models
-CandidateSkill
-JobSkill
-
-👉 Used to store extra attributes like proficiency and importance.
-
-⚙️ Core Features
-🔥 1. Matching Engine
-Compares candidate skills with job requirements
-Generates a score for ranking
-📊 2. Candidate → Job Recommendation
-Returns top jobs based on matching score
-🧑‍💼 3. Recruiter → Candidate Ranking
-Returns top candidates for a job
-📄 4. Job Application System
-Candidates can apply to jobs
-Tracks application status
-🔐 5. Authentication System
-Email-based login
-Protected routes using login_required
-🧮 Matching Algorithm
-
-The scoring system is based on:
-
-🔢 Level Mapping
-Level	Value
-Beginner	1
-Intermediate	2
-Expert	3
-⚖️ Importance Weights
-Importance	Weight
-Nice to have	1
-Preferred	2
-Very important	3
-🧠 Formula
-score = (candidate_level / required_level) * importance_weight
-Ratio capped at 1
-Aggregated across all job skills
-Used for ranking
-🌐 URL Routes
-Route	Description
-/accounts/register/	User registration
-/accounts/login/	Login page
-/accounts/logout/	Logout
-/candidate/<id>/matches/	Recommended jobs
-/job/<id>/matches/	Top candidates
-/applications/apply/<id>/	Apply to job
-/applications/applied/	View applied jobs
-/about/	Live system documentation
-🛠️ Admin Panel
-
-Registered models:
-
-User
-CandidateProfile
-CandidateSkill
-Company
-RecruiterProfile
-Skill
-Job
-JobSkill
-JobApplication
-
-👉 Used for:
-
-Managing companies
-Creating test data
-Monitoring applications
-🖥️ UI Pages
-Home page
-Login/Register
-Job listing
-Candidate matches
-Applied jobs
-Recruiter candidate view
-About (documentation page)
-🚀 How to Run
-git clone https://github.com/ankursingh23/intelligent-job-matching-system.git
-cd intelligent-job-matching-system
-
-python -m venv .venv
-.venv\Scripts\activate   # Windows
-
-pip install -r requirements.txt
-
-python manage.py migrate
-python manage.py runserver
-📈 Future Improvements
-Add filters (location, salary, experience)
-Pagination and search
-Convert to DRF APIs
-ML-based ranking system
-Better UI/UX
-💡 Key Highlights
-Clean multi-app architecture
-Service-layer based matching logic
-Use of intermediate models for rich relationships
-Real-world backend system design
-Extensible and scalable structure
->>>>>>> 9d427d13144bb20cb1cda112db5857b5e469d71b
+No license file is currently included in the repository.

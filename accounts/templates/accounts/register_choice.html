@@ -1,23 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}Choose Registration{% endblock %}
+{% block title %}Register | JobMatch Campus Portal{% endblock %}
 
 {% block content %}
+<div class="page-title">
+    <h1>Choose Registration Type</h1>
+</div>
+
 <div class="row g-3 justify-content-center">
     <div class="col-md-5">
-        <div class="card h-100 shadow-sm">
+        <div class="panel h-100">
+            <div class="panel-header px-3 py-2">Candidate</div>
             <div class="card-body">
-                <h2 class="h5">Register as Candidate</h2>
-                <p class="text-muted">Apply for jobs and track your applications.</p>
+                <p class="muted-note">Apply for jobs, manage skills, and track applications.</p>
                 <a href="{% url 'register_candidate' %}" class="btn btn-success">Candidate Registration</a>
             </div>
         </div>
     </div>
     <div class="col-md-5">
-        <div class="card h-100 shadow-sm">
+        <div class="panel h-100">
+            <div class="panel-header px-3 py-2">Recruiter</div>
             <div class="card-body">
-                <h2 class="h5">Register as Recruiter (Join Company)</h2>
-                <p class="text-muted">Join an existing admin-created company and post jobs.</p>
+                <p class="muted-note">Join an existing company and post openings.</p>
                 <a href="{% url 'register_recruiter' %}" class="btn btn-primary">Recruiter Registration</a>
             </div>
         </div>
