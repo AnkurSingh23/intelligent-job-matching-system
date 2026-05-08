@@ -18,7 +18,13 @@
                         <p class="mb-1 text-muted">{{ app.job.company.name }} | {{ app.job.location }}</p>
                         <small>Applied on {{ app.applied_at|date:"M d, Y" }}</small>
                     </div>
-                    <span class="badge badge-info text-uppercase">{{ app.status }}</span>
+                    {% if app.status == 'applied' %}
+                        <span class="badge" style="background: linear-gradient(180deg, #ffd7b0, #f28f42) !important; color: #4b2200 !important; border-color: #ae5e19 !important; padding: 6px 12px; font-weight: 700;">PENDING</span>
+                    {% elif app.status == 'shortlisted' %}
+                        <span class="badge" style="background: linear-gradient(180deg, #dff3c9, #88b95a) !important; color: #20310f !important; border-color: #4f7a30 !important; padding: 6px 12px; font-weight: 700;">SHORTLISTED</span>
+                    {% elif app.status == 'rejected' %}
+                        <span class="badge" style="background: linear-gradient(180deg, #f6bbbb, #d95c5c) !important; color: #fff !important; border-color: #8c2f2f !important; padding: 6px 12px; font-weight: 700;">REJECTED</span>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

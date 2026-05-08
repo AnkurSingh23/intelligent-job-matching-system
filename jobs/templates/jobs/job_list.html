@@ -73,7 +73,11 @@
                     
                     <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center;">
                         {% if current_user_role == 'candidate' %}
-                            <a href="{% url 'apply_job' job.id %}" class="btn btn-success" style="text-align: center; padding: 10px 20px;">Apply Now</a>
+                            {% if card.already_applied %}
+                                <div class="btn btn-info" style="text-align: center; padding: 10px 20px; background: linear-gradient(180deg, #ffd7b0, #f28f42) !important; border-color: #ae5e19 !important; color: #4b2200 !important; opacity: 0.7; cursor: default;">Applied</div>
+                            {% else %}
+                                <a href="{% url 'apply_job' job.id %}" class="btn btn-success" style="text-align: center; padding: 10px 20px;">Apply Now</a>
+                            {% endif %}
                             <a href="{% url 'candidate_matches' candidate.id %}" class="btn btn-info" style="text-align: center; padding: 10px 20px;">View Match</a>
                         {% elif current_user_role == 'recruiter' %}
                             <a href="{% url 'recruiter_jobs' %}" class="btn btn-warning" style="text-align: center; padding: 10px 20px;">Go to Dashboard</a>

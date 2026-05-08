@@ -29,6 +29,7 @@ def job_list(request):
     candidate = None
     candidate_skill_names = []
     match_scores = {}
+    applied_jobs = set()
 
     if request.user.is_authenticated:
         candidate = CandidateProfile.objects.filter(user=request.user).first()
@@ -41,6 +42,11 @@ def job_list(request):
             candidate.candidateskill_set.select_related("skill")
             .values_list("skill__name", flat=True)
         )
+        # Get list of jobs the candidate has already applied to
+        applied_jobs = set(
+            JobApplication.objects.filter(candidate=candidate)
+            .values_list("job_id", flat=True)
+        )
 
     job_ids = [job.id for job in jobs]
     required_skills_map = {}
@@ -52,6 +58,7 @@ def job_list(request):
             "job": job,
             "score": match_scores.get(job.id),
             "required_skills": required_skills_map.get(job.id, []),
+            "already_applied": job.id in applied_jobs,
         }
         for job in jobs
     ]

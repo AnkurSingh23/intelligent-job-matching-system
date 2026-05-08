@@ -230,6 +230,16 @@
             border: 1px solid rgba(0,0,0,0.12);
             font-size: 0.78rem;
             letter-spacing: 0.01em;
+            background: linear-gradient(180deg, #fff3bd, #f3cc6d) !important;
+            color: #4d3800 !important;
+            border-color: #af8b2f !important;
+            font-weight: 700;
+        }
+
+        .badge-info {
+            background: linear-gradient(180deg, #fff3bd, #f3cc6d) !important;
+            color: #4d3800 !important;
+            border-color: #af8b2f !important;
         }
 
         .skill-tag {
@@ -331,7 +341,7 @@
             <div class="brand-row">
                 <div>
                     <div class="brand-title">JobMatch Campus Portal</div>
-                    <div class="brand-tagline">A college-project style job board with matching, applications, and recruiter dashboards.</div>
+                    <div class="brand-tagline">Intelligent skill-based job matching platform for candidates and recruiters.</div>
                     <div class="status-chip">Demo build • Spring 2026</div>
                 </div>
                 <div class="masthead-tools">
@@ -357,7 +367,9 @@
             <nav class="top-nav" aria-label="Primary">
                 <a href="{% url 'home' %}">Home</a>
                 <a href="{% url 'job_list' %}">Jobs</a>
-                <a href="{% url 'about' %}">About</a>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'about' %}">About</a>
+                {% endif %}
                 {% if user.is_authenticated %}
                     {% if current_user_role == 'candidate' %}
                         <a href="{% url 'candidate_skills' %}">My Skills</a>
@@ -386,7 +398,7 @@
         </main>
 
         <footer>
-            <strong>JobMatch Campus Portal</strong> • built like a strong college project, not a polished SaaS clone.
+            <strong>JobMatch Campus Portal</strong> • Skill-based matching engine for intelligent hiring and career discovery.
         </footer>
     </div>
 </body>
